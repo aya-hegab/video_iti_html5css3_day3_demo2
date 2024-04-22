@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>video</title>
+    <style>
+        video {
+            width: 350px;
+            height: 350px;
+        }
+
+        #container {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+
+        #controlsWrapper {
+            display: flex;
+            width: 350px;
+            height: 500px;
+            flex-direction: column;
+            justify-content: space-evenly;
+            border: 2px solid black;
+        }
+
+        #videoWrapper {
+            display: flex;
+            width: 700px;
+            height: 500px;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid black;
+        }
+
+        details:nth-child(odd){
+            background-color: lightgray;
+        }
+
+        details:nth-child(even){
+            background-color: hotpink;
+        }
+    </style>
+</head>
+<body>
+<section id="container">
+    <section id="controlsWrapper">
+        <details>
+            <summary>play | pause</summary>
+            <input type="button" id="playPauseBtn" value="play" onclick="playPause()">
+        </details>
+
+        <details>
+            <summary>change video size</summary>
+            <select id="select" onchange="changeVideoSize(event)">
+                <option value="s">small</option>
+                <option value="m">medium</option>
+                <option value="l">large</option>
+                <option value="fs">full screen</option>
+            </select>
+        </details>
+
+        <details>
+            <summary>change volume</summary>
+            <input type="range" min="0" max="1" step="0.1" value="0.5" onchange="changeVolume(event)">
+        </details>
+
+        <details>
+            <summary>mute | loop</summary>
+            <input type="checkbox" onchange="muteFun()">Mute <br>
+            <input type="checkbox" onchange="loopFun()">Loop
+        </details>
+
+        <details>
+            <summary>change SeekBar</summary>
+            <input id="seekbar" type="range" min="0" max="100" step="any" value="0" onchange="changeSeekBar(event)">
+        </details>
+
+        <details>
+            <summary> >> | << </summary>
+            <input type="button" value=">>" onclick="forwardFun()">
+            <input type="button" value="<<" onclick="backwardFun()">
+        </details>
+
+        <details>
+            <summary> slow motion </summary>
+            <input type="button" value="slow motion" onclick="slowMotionFun()">
+        </details>
+    </section>
+    <section id="videoWrapper">
+        <video src="1.mp4" id="my-video"></video>
+    </section>
+</section>
+<script>
+    let playPauseBtn = document.getElementById("playPauseBtn")
+    let myVideo = document.getElementById("my-video")
+    let seekbar = document.getElementById("seekbar")
+    function playPause() {
+        // myVideo.play()
+        if (myVideo.paused) {
+            myVideo.play()
+            playPauseBtn.value = 'pause'
+        } else {
+            myVideo.pause()
+            playPauseBtn.value = 'play'
+        }
+    }
+
+    // document.getElementById("select").addEventListener('change', function (e) {
+    //     console.log(e.target.value)
+    // })
+
+    function changeVideoSize(e) {
+        // console.log(e.target.value)
+        switch (e.target.value) {
+            case 's':
+                myVideo.style.width = myVideo.style.height = '450px'
+                break
+            case 'm':
+                myVideo.style.width = myVideo.style.height = '500px'
+                break
+            case 'l':
+                myVideo.style.width = myVideo.style.height = '600px'
+                break
+            case 'fs':
+                myVideo.requestFullscreen()
+                break
+        }
+    }
+
+    function changeVolume(e) {
+        // console.log(e.target.value)
+        myVideo.volume = e.target.value
+    }
+
+    function muteFun() {
+        // if (myVideo.muted) {
+        //     myVideo.muted = false
+        // } else {
+        //     myVideo.muted = true
+        // }
+
+        myVideo.muted = !myVideo.muted
+    }
+
+    function loopFun() {
+        myVideo.loop = !myVideo.loop
+    }
+
+    function changeSeekBar(e) {
+        myVideo.currentTime = e.target.value * myVideo.duration / 100
+    }
+
+    myVideo.addEventListener('timeupdate', function (e) {
+        console.log(e.target.value)
+        seekbar.value = myVideo.currentTime / myVideo.duration * 100
+    })
+
+    function forwardFun() {
+        // default for playBackRate => 1
+        // console.log(myVideo.playbackRate)
+        myVideo.playbackRate++
+    }
+
+    function backwardFun() {
+        // default for playBackRate => 1
+        myVideo.playbackRate--
+        if (myVideo.playbackRate === 0) {
+            myVideo.playbackRate = 1
+        }
+    }
+
+    function slowMotionFun() {
+        myVideo.playbackRate = 0.5
+    }
+</script>
+</body>
+</html>
